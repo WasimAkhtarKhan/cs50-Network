@@ -1,0 +1,36 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    
+    {% if user.is_authenticated %}
+<form action="{% url 'create' %}" method="POST">
+    {% csrf_token %}
+    <div class="NewPosts" id="NewPosts">
+        <div class="card" style="width:70%;margin-left: 10%;margin-right: 20%;">
+            <h5 class="card-header">Create Post</h5>
+            <div class="card-body">
+                <h5 class="card-title">Write Post</h5>
+                <div class="form-group">
+                    <label for="exampleFormControlTextarea1">Content</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" placeholder="Enter Content" name="content" required></textarea>
+                  </div>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </div>
+</form>
+    {% endif %}
+
+    <h2 style="margin-left: 20px;">All Posts</h2>
+    {% for post in posts %}
+        <div class="card" style="width:70%;margin-left: 10%;margin-right: 20%;">
+            <div class="card-body">
+                <a href="{% url 'viewprofile' post.user %}"><h5 class="card-title">{{post.user}}</h5></a>
+                <div class="form-group">
+                    <p>{{post.date}}<br>{{post.content}}</p>
+                </div>
+                <p>{{post.likes}}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <h2 style="margin-left: 20px;">Posts of {{username}}</h2>
+    <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Profile Details</h5>
+            <p class="card-text">Followers:{{no_of_followers}}</p>
+            <p class="card-text">Followings:0</p>
+            
+            {% if username != request.user.username %}
+            <a href="#" class="btn btn-primary">Follow/Unfollow</a>
+            {% endif %}
+
+        </div>
+        </div>
+      </div>
+    {% for post in posts %}
+        <div class="card" style="width:70%;margin-left: 10%;margin-right: 20%;">
+            <div class="card-body">
+                <a href="{% url 'viewprofile' post.user %}"><h5 class="card-title">{{post.user}}</h5></a>
+                <div class="form-group">
+                    <p>{{post.date}}<br>{{post.content}}</p>
+                </div>
+                <p>{{post.likes}}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
