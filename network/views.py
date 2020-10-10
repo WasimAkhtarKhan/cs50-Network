@@ -3,6 +3,8 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render , redirect #,get_object_or_404
 from django.urls import reverse
+from django.core.paginator import Paginator
+
 from datetime import datetime
 
 
@@ -76,9 +78,15 @@ def index(request):
     if request.method == "GET":
         posts = Post.objects.all().order_by('-id')
         allpost = True
+
+        paginator = Paginator(posts, 5) # Show 5 posts per page.
+
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
     return render(request, "network/index.html",{
-        "posts":posts,
         "AllPost":allpost,
+        "page_obj": page_obj,
     })
 
 def viewFollowings(request):
@@ -92,8 +100,13 @@ def viewFollowings(request):
                 if profile.following == p.user :
                     totalPosts.append(p)
 
+        paginator = Paginator(totalPosts, 5) # Show 5 posts per page.
+
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
     return render(request, "network/index.html",{
-        "totalPosts":totalPosts,
+        "page_obj": page_obj,
     })
 
 
