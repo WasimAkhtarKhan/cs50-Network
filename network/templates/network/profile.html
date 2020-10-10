@@ -7,10 +7,14 @@
           <div class="card-body">
             <h5 class="card-title">Profile Details</h5>
             <p class="card-text">Followers:{{no_of_followers}}</p>
-            <p class="card-text">Followings:0</p>
+            <p class="card-text">Followings:{{no_of_followings}}</p>
             
             {% if username != request.user.username %}
-            <a href="#" class="btn btn-primary">Follow/Unfollow</a>
+            {% if alreadyFollow %}
+            <a href="{% url 'unfollow' username %}" class="btn btn-primary">Unfollow</a>
+            {% else %}
+            <a href="{% url 'follow' username %}" class="btn btn-primary">Follow</a>
+            {% endif %}
             {% endif %}
 
         </div>
@@ -27,4 +31,5 @@
             </div>
         </div>
     {% endfor %}
+
 {% endblock %}

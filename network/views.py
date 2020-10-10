@@ -25,20 +25,75 @@ def create(request):
 
 
 def viewProfile(request,username):
-    posts = Post.objects.filter(user=username).order_by('-id')
-    profile = Profile.objects.get(user__username=username)
-    #no_of_followers = profile.following.count()
-    return render(request, 'network/profile.html',{
-        'posts':posts,
-        'username':username,
-        #'no_of_followers':no_of_followers
-    })
+    if request.method == "GET":
+        posts = Post.objects.filter(user=username).order_by('-id')
+        #profile = Profile.objects.get(user__username=username)
+        followers = Profile.objects.filter(following=username)
+        no_of_followers = followers.count()
+        followings = Profile.objects.filter(user__username=username)
+        no_of_followings = followings.count()
+        try:
+            profile = Profile.objects.get(user=request.user,following=username)#Already Following
+            if(profile):
+                AlreadyFollow = True
+        except:
+            AlreadyFollow = False
+
+        return render(request, 'network/profile.html',{
+            'posts':posts,
+            'username':username,
+            'alreadyFollow':AlreadyFollow,
+            'no_of_followers':no_of_followers,
+            'no_of_followings':no_of_followings,
+        })
+
+def follow(request,username):
+    #Create New Profile
+    if request.method == "GET":
+        profile = Profile.objects.get_or_create(user=request.user,following=username)
+        if(profile):
+            pass
+        else:
+            profile.save()
+
+    return HttpResponseRedirect(reverse("index"))
+
+
+def unfollow(request,username):
+    #Create New Profile
+    if request.method == "GET":
+        profile = Profile.objects.get(user=request.user,following=username)
+        if(profile):
+            profile.delete()
+        else:
+            pass
+
+    return HttpResponseRedirect(reverse("index"))
+    
 
 
 def index(request):
-    posts = Post.objects.all().order_by('-id')
+    if request.method == "GET":
+        posts = Post.objects.all().order_by('-id')
+        allpost = True
     return render(request, "network/index.html",{
         "posts":posts,
+        "AllPost":allpost,
+    })
+
+def viewFollowings(request):
+    
+    if request.method == "GET":
+        totalPosts = []
+        profiles = Profile.objects.filter(user__username=request.user.username)
+        posts = Post.objects.all().order_by('-id')
+        for p in posts:
+            for profile in profiles:
+                if profile.following == p.user :
+                    totalPosts.append(p)
+
+    return render(request, "network/index.html",{
+        "totalPosts":totalPosts,
     })
 
 
@@ -84,11 +139,6 @@ def register(request):
         try:
             user = User.objects.create_user(username, email, password)
             user.save()
-
-            #Create New Profile
-            profile = Profile()
-            profile.user = user
-            profile.save()
 
         except IntegrityError:
             return render(request, "network/register.html", {

@@ -21,6 +21,7 @@
 </form>
     {% endif %}
 
+    {% if AllPost %}
     <h2 style="margin-left: 20px;">All Posts</h2>
     {% for post in posts %}
         <div class="card" style="width:70%;margin-left: 10%;margin-right: 20%;">
@@ -33,4 +34,19 @@
             </div>
         </div>
     {% endfor %}
+    {% else %}
+    <h2 style="margin-left: 20px;">Following Posts</h2>
+    {% for totalPost in totalPosts %}
+        <div class="card" style="width:70%;margin-left: 10%;margin-right: 20%;">
+            <div class="card-body">
+                <a href="{% url 'viewprofile' totalPost.user %}"><h5 class="card-title">{{totalPost.user}}</h5></a>
+                <div class="form-group">
+                    <p>{{totalPost.date}}<br>{{totalPost.content}}</p>
+                </div>
+                <p>{{totalPost.likes}}</p>
+            </div>
+        </div>
+    {% endfor %}
+    {% endif %}
+
 {% endblock %}
