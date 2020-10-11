@@ -25,12 +25,21 @@
     {% if AllPost %}
     <h2 style="margin-left: 20px;">All Posts</h2>
     {% for post in page_obj %}
-        <div class="card" style="width:70%;margin-left: 10%;margin-right: 20%;">
+        <div class="card" style="width:70%;margin-left: 10%;margin-right: 20%;margin-top: 20px;">
             <div class="card-body">
                 <a href="{% url 'viewprofile' post.user %}"><h5 class="card-title">{{post.user}}</h5></a>
-                <div class="form-group">
+                {% if request.user.username == post.user %}
+                <button onclick="edit_post({{post.id}})" id="{{post.id}}" class="btn btn-outline-primary edit-btn" style="float: right;">Edit</button>
+                {% endif %}
+                <div class="form-group{{post.id}}" id="form-group{{post.id}}" style="display: block;">
                     <p>{{post.date}}<br>{{post.content}}</p>
                 </div>
+                <form method="POST" action="{% url 'edit' post.id %}" id="edit-form{{post.id}}" style="display: none;">
+                    {% csrf_token %}
+                    {{post.date}}
+                    <textarea rows="5" class="form-control" name="textarea">{{post.content}}</textarea>
+                    <button type="submit" class="btn btn-outline-primary" style="float: right;">Save</button>
+                </form>
                 <p>{{post.likes}}</p>
             </div>
         </div>
@@ -39,7 +48,7 @@
     {% else %}
     <h2 style="margin-left: 20px;">Following Posts</h2>
     {% for totalPost in page_obj %}
-        <div class="card" style="width:70%;margin-left: 10%;margin-right: 20%;">
+        <div class="card" style="width:70%;margin-left: 10%;margin-right: 20%;margin-top: 20px;">
             <div class="card-body">
                 <a href="{% url 'viewprofile' totalPost.user %}"><h5 class="card-title">{{totalPost.user}}</h5></a>
                 <div class="form-group">
@@ -79,5 +88,4 @@
             {% endif %}
         </ul>
     </div>
-
 {% endblock %}

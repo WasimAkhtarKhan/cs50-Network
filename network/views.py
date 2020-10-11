@@ -10,6 +10,7 @@ from datetime import datetime
 
 from .models import User,Post ,Profile
 
+
 def create(request):
     if request.method == "POST":
         post = Post()
@@ -75,7 +76,7 @@ def unfollow(request,username):
 
 
 def index(request):
-    if request.method == "GET":
+    if request.method == "GET":    
         posts = Post.objects.all().order_by('-id')
         allpost = True
 
@@ -84,10 +85,21 @@ def index(request):
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
-    return render(request, "network/index.html",{
-        "AllPost":allpost,
-        "page_obj": page_obj,
-    })
+        return render(request, "network/index.html",{
+            "AllPost" : allpost,
+            "page_obj" : page_obj,
+        })
+
+def edit(request,post_id):
+    if request.method == "POST":
+        post = Post.objects.get(id=post_id)
+        content = request.POST["textarea"]
+        post.content = content
+        post.save()
+
+    return redirect("index")
+    
+
 
 def viewFollowings(request):
     

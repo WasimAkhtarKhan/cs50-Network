@@ -21,9 +21,12 @@
         </div>
       </div>
     {% for post in posts %}
-        <div class="card" style="width:70%;margin-left: 10%;margin-right: 20%;">
+        <div class="card" style="width:70%;margin-left: 10%;margin-right: 20%;margin-top: 20px;">
             <div class="card-body">
                 <a href="{% url 'viewprofile' post.user %}"><h5 class="card-title">{{post.user}}</h5></a>
+                {% if request.user.username == post.user %}
+                <button type="submit" class="btn btn-warning" style="float: right;">Edit</button>
+                {% endif %}
                 <div class="form-group">
                     <p>{{post.date}}<br>{{post.content}}</p>
                 </div>
