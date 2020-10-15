@@ -8,7 +8,7 @@ from django.core.paginator import Paginator
 from datetime import datetime
 
 
-from .models import User,Post ,Profile
+from .models import User,Post ,Profile,Like
 
 
 def create(request):
@@ -174,3 +174,20 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+
+def like_post(request):
+    user = request.user
+    if request.method == 'GET':
+        post_id = request.GET['post_id']
+        likedpost = Post.objects.get(pk=post_id)
+        if user in likedpost.liked.all():
+            likedpost.liked.remove(user)
+            like = Like.objects.get(post=likedpost, user=user)
+            like.delete()
+        else:
+            like = Like.objects.get_or_create(post=likedpost, user=user)
+            likedpost.liked.add(user)
+            likedpost.save()
+        
+        return HttpResponse('Success')

@@ -14,3 +14,4 @@
         document.querySelector(`#edit-form${id}`).style.display = 'block';
         document.querySelector(`#form-group${id}`).style.display = 'none';
       }
+

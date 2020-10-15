@@ -28,11 +28,22 @@
         <div class="card" style="width:70%;margin-left: 10%;margin-right: 20%;margin-top: 20px;">
             <div class="card-body">
                 <a href="{% url 'viewprofile' post.user %}"><h5 class="card-title">{{post.user}}</h5></a>
-                {% if request.user.username == post.user %}
+                
+                
+                {% if request.user == post.user %}
                 <button onclick="edit_post({{post.id}})" id="{{post.id}}" class="btn btn-outline-primary edit-btn" style="float: right;">Edit</button>
-                {% endif %}
+            <button type="button" class="delete" data-toggle="modal" data-target="#delete">Delete</button>
+            {% elif request.user in post.liked.all %}
+            <a class="likebutton" href="#" data-catid="{{ post.id }}" id="{{post.id}}" data-total="{{post.liked.all.count}}"  data-value="Unlike" value="submit"><i class="fa fa-heart" id="heart{{post.id}}" style="color:red;"></i><span id="liked{{post.id}}">{{post.liked.all.count}}</span></a>
+            {% else %}
+            <a class="likebutton" href="#" data-catid="{{ post.id }}" id="{{post.id}}" data-total="{{post.liked.all.count}}"  data-value="Like" value="submit"><i class="fa fa-heart" id="heart{{post.id}}" style="color:black;"></i><span id="liked{{post.id}}">{{post.liked.all.count}}</span></a>
+            {% endif %}
+
+                
+                
                 <div class="form-group{{post.id}}" id="form-group{{post.id}}" style="display: block;">
                     <p>{{post.date}}<br>{{post.content}}</p>
+                    
                 </div>
                 <form method="POST" action="{% url 'edit' post.id %}" id="edit-form{{post.id}}" style="display: none;">
                     {% csrf_token %}
